@@ -1,0 +1,126 @@
+/* Glassmorphism Design System */
+:root {
+    /* Color Palette - Deep Purple/Blue/Pink Gradients */
+    --primary-bg: #0f172a;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-color: #8b5cf6; /* Violet */
+    --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+}
+
+body {
+    background-color: var(--primary-bg);
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+}
+
+/* Glass Card */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
+    padding: 20px;
+}
+
+/* Glass Inputs */
+.form-control, .form-select {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+    backdrop-filter: blur(4px);
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.25) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--accent-gradient) !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+.btn-glass {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Sidebar */
+.sidebar {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--glass-border);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    padding-top: 2rem;
+    z-index: 1000;
+}
+
+.sidebar .nav-link {
+    color: var(--text-secondary);
+    padding: 0.8rem 1.5rem;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    color: var(--text-primary);
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, transparent 100%);
+    border-left-color: var(--accent-color);
+}
+
+.content-wrapper {
+    margin-left: 250px; /* Width of sidebar */
+    padding: 2rem;
+}
+
+/* Tables */
+.table {
+    color: var(--text-primary) !important;
+}
+.table thead th {
+    border-bottom: 2px solid var(--glass-border);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.table td {
+    border-bottom: 1px solid var(--glass-border);
+}
+
+/* Utilities */
+.text-accent { color: var(--accent-color); }
+.bg-glass { background: var(--glass-bg); }
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}

@@ -3,4 +3,6 @@ psycopg2-binary
 dj-database-url
 python-dotenv
 gunicorn
-whitenoise
+django-crispy-forms
+crispy-bootstrap5
+
