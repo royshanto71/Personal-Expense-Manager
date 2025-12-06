@@ -4,29 +4,94 @@
 
 {% block content %}
 <div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-header">Total Expenses</div>
-            <div class="card-body">
-                <h5 class="card-title">${{ total_expenses|floatformat:2 }}</h5>
-            </div>
+    <!-- Summary Cards -->
+    <div class="col-md-4 mb-3">
+        <div class="glass-card text-center h-100 d-flex flex-column justify-content-center">
+            <h6 class="text-secondary text-uppercase mb-2">My Balance</h6>
+            <h2 class="display-5 fw-bold {% if net_balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+                ${{ net_balance|floatformat:2 }}
+            </h2>
         </div>
-        <div class="card">
-            <div class="card-body">
-                 <canvas id="categoryChart"></canvas>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="glass-card h-100 p-3">
+            <h6 class="text-secondary text-uppercase mb-3">Income vs Expense</h6>
+            <div class="d-flex justify-content-between mb-2">
+                <span>Income</span>
+                <span class="text-success fw-bold">+${{ total_income|floatformat:0 }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>Expense</span>
+                <span class="text-danger fw-bold">-${{ total_expenses|floatformat:0 }}</span>
+            </div>
+             <div class="progress mt-3" style="height: 6px; background: rgba(255,255,255,0.1);">
+                 {% widthratio total_expenses total_income 100 as expense_pct %}
+                <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                <div class="progress-bar bg-danger" role="progressbar" style="margin-left: -{{ expense_pct }}%; width: {{ expense_pct }}%"></div>
             </div>
         </div>
     </div>
-    <div class="col-md-8">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Recent Expenses</h3>
-            <div>
-                <a href="{% url 'expense-create' %}" class="btn btn-success">+ New Expense</a>
-                <a href="{% url 'category-create' %}" class="btn btn-outline-secondary">+ New Category</a>
-            </div>
+    
+     <!-- Categories Doughnut -->
+    <div class="col-md-4 mb-3">
+        <div class="glass-card h-100">
+             <canvas id="categoryChart" height="150"></canvas>
         </div>
-        
-        <table class="table table-striped">
+    </div>
+</div>
+
+<!-- Trend Chart -->
+<div class="glass-card mb-4">
+    <h5 class="fw-bold mb-3">Spending Trend (Last 30 Days)</h5>
+    <div style="height: 250px;">
+        <canvas id="trendChart"></canvas>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold">Recent Expenses</h3>
+    <div>
+        <a href="#" 
+           class="btn btn-primary shadow-lg"
+           hx-get="{% url 'expense-create' %}" 
+           hx-target="#modal-container" 
+           data-bs-toggle="modal" 
+           data-bs-target="#modal-container">
+           <i class="bi bi-plus-lg"></i> New Expense
+        </a>
+    </div>
+</div>
+
+<div class="glass-card" hx-get="{% url 'dashboard' %}" hx-trigger="expenseListUpdated from:body" hx-target="#expense-table-body" hx-select="#expense-table-body">
+    <!-- Filters -->
+    <div class="row g-2 mb-4">
+        <div class="col-md-4">
+            <select name="category" class="form-select" 
+                    hx-get="{% url 'dashboard' %}" 
+                    hx-target="#expense-table-body" 
+                    hx-trigger="change">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="date_from" class="form-control" 
+                   hx-get="{% url 'dashboard' %}" 
+                   hx-target="#expense-table-body" 
+                   hx-trigger="change">
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="date_to" class="form-control" 
+                   hx-get="{% url 'dashboard' %}" 
+                   hx-target="#expense-table-body" 
+                   hx-trigger="change">
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-borderless align-middle mb-0">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -36,29 +101,8 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for expense in expenses %}
-                <tr>
-                    <td>{{ expense.date }}</td>
-                    <td>{{ expense.title }}</td>
-                    <td>
-                        {% if expense.category %}
-                            <span class="badge bg-secondary">{{ expense.category.name }}</span>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>${{ expense.amount }}</td>
-                    <td>
-                        <a href="{% url 'expense-update' expense.pk %}" class="btn btn-sm btn-info">Edit</a>
-                        <a href="{% url 'expense-delete' expense.pk %}" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">No expenses found.</td>
-                </tr>
-                {% endfor %}
+            <tbody id="expense-table-body">
+                {% include 'expenses/partials/expense_rows.html' %}
             </tbody>
         </table>
     </div>
@@ -66,24 +110,53 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx = document.getElementById('categoryChart').getContext('2d');
-    new Chart(ctx, {
+    // Category Chart
+    const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+    new Chart(ctxCategory, {
         type: 'doughnut',
         data: {
             labels: {{ category_labels|safe }},
             datasets: [{
                 data: {{ category_data|safe }},
-                backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                ]
+                backgroundColor: {{ category_colors|safe|default:"[]" }},
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                borderWidth: 1
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    position: 'bottom',
-                }
+                legend: { position: 'right', labels: { color: '#f8fafc', boxWidth: 12 } }
+            }
+        }
+    });
+
+    // Trend Chart
+    const ctxTrend = document.getElementById('trendChart').getContext('2d');
+    new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+            labels: {{ trend_labels|safe }},
+            datasets: [{
+                label: 'Daily Spending',
+                data: {{ trend_data|safe }},
+                borderColor: '#8b5cf6',
+                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            },
+            plugins: {
+                legend: { display: false }
             }
         }
     });

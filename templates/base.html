@@ -40,13 +40,25 @@
             </li>
             
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'expense-list' %}">
-                    <i class="bi bi-list-ul me-2"></i> Expenses
+                <a class="nav-link" href="{% url 'budget-list' %}"><i class="bi bi-piggy-bank me-2"></i> Budgets</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'reports' %}"><i class="bi bi-graph-up me-2"></i> Reports</a>
+            </li>
+            
+            <li class="nav-item mt-3">
+                <span class="text-uppercase text-secondary fs-7 px-4 fw-bold" style="font-size: 0.75rem;">Actions</span>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modal-container" hx-get="{% url 'income-create' %}" hx-target="#modal-container">
+                    <i class="bi bi-arrow-down-circle me-2"></i> Add Income
                 </a>
             </li>
-            <!-- Placeholders for V2 links -->
             <li class="nav-item">
-                <a class="nav-link disabled" href="#"><i class="bi bi-piggy-bank me-2"></i> Budgets (Soon)</a>
+                <a class="nav-link" href="{% url 'category-create' %}">
+                    <i class="bi bi-tags me-2"></i> Add Category
+                </a>
             </li>
         </ul>
         
@@ -114,6 +126,9 @@
             {% block content %}{% endblock %}
         </div>
     </main>
+
+    <!-- Modal Container -->
+    <div id="modal-container" class="modal fade" tabindex="-1" aria-hidden="true"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

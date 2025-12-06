@@ -1,0 +1,26 @@
+{% for expense in expenses %}
+<tr>
+    <td>{{ expense.date }}</td>
+    <td>{{ expense.title }}</td>
+    <td>
+        {% if expense.category %}
+            <span class="badge rounded-pill" style="background-color: {{ expense.category.color }}20; color: {{ expense.category.color }}; border: 1px solid {{ expense.category.color }};">
+                <i class="{{ expense.category.icon }} me-1"></i> {{ expense.category.name }}
+            </span>
+        {% else %}
+            -
+        {% endif %}
+    </td>
+    <td>${{ expense.amount }}</td>
+    <td>
+        <a href="{% url 'expense-update' expense.pk %}" class="btn btn-sm btn-glass me-1"><i class="bi bi-pencil"></i></a>
+        <a href="{% url 'expense-delete' expense.pk %}" class="btn btn-sm btn-glass text-danger"><i class="bi bi-trash"></i></a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="5" class="text-center py-4 text-secondary">
+        No expenses found matching your criteria.
+    </td>
+</tr>
+{% endfor %}

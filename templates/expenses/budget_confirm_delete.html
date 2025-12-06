@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Budget{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="glass-card text-center">
+            <i class="bi bi-exclamation-triangle display-1 text-warning mb-3"></i>
+            <h4 class="mb-3">Delete Budget?</h4>
+            <p class="text-secondary mb-4">Are you sure you want to remove the budget for "<strong>{{ object.category.name }}</strong>"?</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-danger">Yes, Delete It</button>
+                    <a href="{% url 'budget-list' %}" class="btn btn-glass">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
