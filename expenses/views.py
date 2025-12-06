@@ -78,6 +78,11 @@ class ExpenseCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('expense-list')
     template_name = 'expenses/expense_form.html'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def get_template_names(self):
         if self.request.headers.get('HX-Request'):
             return ['expenses/partials/expense_form_modal.html']
@@ -141,8 +146,21 @@ class IncomeCreateView(LoginRequiredMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_template_names(self):
+        if self.request.headers.get('HX-Request'):
+            return ['expenses/partials/income_form_modal.html']
+        return ['expenses/income_form.html']
+
     def form_valid(self, form):
         form.instance.user = self.request.user
+        self.object = form.save()
+        
+        if self.request.headers.get('HX-Request'):
+            from django.http import HttpResponse
+            response = HttpResponse(status=204)
+            response['HX-Trigger'] = 'incomeAdded'
+            return response
+            
         return super().form_valid(form)
 
 class IncomeUpdateView(LoginRequiredMixin, UpdateView):

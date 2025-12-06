@@ -1,26 +1,45 @@
 {% for expense in expenses %}
 <tr>
-    <td>{{ expense.date }}</td>
-    <td>{{ expense.title }}</td>
     <td>
+        <span class="text-secondary small">{{ expense.date|date:"M d" }}</span>
+    </td>
+    <td>
+        <div class="fw-medium">{{ expense.title }}</div>
+        <small class="text-secondary d-md-none">
+            {% if expense.category %}
+                <span class="badge bg-glass" style="background: {{ expense.category.color }}20; color: {{ expense.category.color }}">
+                    {{ expense.category.name }}
+                </span>
+            {% endif %}
+        </small>
+    </td>
+    <td class="d-none d-md-table-cell">
         {% if expense.category %}
-            <span class="badge rounded-pill" style="background-color: {{ expense.category.color }}20; color: {{ expense.category.color }}; border: 1px solid {{ expense.category.color }};">
-                <i class="{{ expense.category.icon }} me-1"></i> {{ expense.category.name }}
+            <span class="badge bg-glass" style="background: {{ expense.category.color }}15; color: {{ expense.category.color }}; border: 1px solid {{ expense.category.color }}30">
+                <i class="bi {{ expense.category.icon|default:'bi-tag' }} me-1"></i>{{ expense.category.name }}
             </span>
         {% else %}
-            -
+            <span class="text-secondary">—</span>
         {% endif %}
     </td>
-    <td>${{ expense.amount }}</td>
-    <td>
-        <a href="{% url 'expense-update' expense.pk %}" class="btn btn-sm btn-glass me-1"><i class="bi bi-pencil"></i></a>
-        <a href="{% url 'expense-delete' expense.pk %}" class="btn btn-sm btn-glass text-danger"><i class="bi bi-trash"></i></a>
+    <td class="text-end">
+        <span class="fw-bold text-danger">-${{ expense.amount|floatformat:2 }}</span>
+    </td>
+    <td class="text-end">
+        <div class="btn-group btn-group-sm">
+            <a href="{% url 'expense-update' expense.pk %}" class="btn btn-glass py-1 px-2" title="Edit">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{% url 'expense-delete' expense.pk %}" class="btn btn-glass py-1 px-2 text-danger" title="Delete">
+                <i class="bi bi-trash"></i>
+            </a>
+        </div>
     </td>
 </tr>
 {% empty %}
 <tr>
-    <td colspan="5" class="text-center py-4 text-secondary">
-        No expenses found matching your criteria.
+    <td colspan="5" class="text-center py-4">
+        <span class="text-secondary">No expenses found</span>
     </td>
 </tr>
 {% endfor %}

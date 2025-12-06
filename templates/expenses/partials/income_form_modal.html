@@ -1,0 +1,32 @@
+{% load crispy_forms_tags %}
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-card border-0">
+        <div class="modal-header border-bottom border-secondary border-opacity-25 text-white">
+            <h5 class="modal-title"><i class="bi bi-arrow-down-circle text-success me-2"></i>Add Income</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-white">
+            <form hx-post="{% url 'income-create' %}" hx-swap="none">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-2"></i>Save Income
+                    </button>
+                    <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Close modal on successful submission
+    document.body.addEventListener('incomeAdded', function() {
+        bootstrap.Modal.getInstance(document.getElementById('modal-container')).hide();
+        // Optionally refresh the page to show updated totals
+        if (window.location.pathname === '/') {
+            window.location.reload();
+        }
+    });
+</script>
