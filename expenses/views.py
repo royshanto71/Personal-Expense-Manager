@@ -6,6 +6,8 @@ from .models import Expense, Category, Income, Budget
 from .forms import ExpenseForm, CategoryForm, IncomeForm, BudgetForm
 from django.db.models import Sum
 from django.db import models
+from django.utils import timezone
+from datetime import timedelta
 
 class ExpenseListView(LoginRequiredMixin, ListView):
     model = Expense
@@ -58,7 +60,7 @@ class ExpenseListView(LoginRequiredMixin, ListView):
         
         # Trend Chart Data (Last 30 days)
         from django.db.models.functions import TruncDate
-        last_30_days = timezone.now().date() - timezone.timedelta(days=30)
+        last_30_days = timezone.now().date() - timedelta(days=30)
         daily_trend = expenses_qs.filter(date__gte=last_30_days)\
             .annotate(day=TruncDate('date'))\
             .values('day')\

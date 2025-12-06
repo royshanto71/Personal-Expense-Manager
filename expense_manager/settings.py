@@ -89,7 +89,8 @@ WSGI_APPLICATION = 'expense_manager.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-        conn_max_age=600
+        conn_max_age=600,
+        conn_health_checks=True  # Reconnect if Neon connection was dropped
     )
 }
 
