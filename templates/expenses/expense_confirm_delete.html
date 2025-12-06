@@ -1,20 +1,42 @@
 {% extends 'base.html' %}
 
-{% block title %}Delete Expense{% endblock %}
+{% block title %}Delete Expense - FinanceFlow{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card border-danger">
-            <div class="card-header bg-danger text-white">Confirm Delete</div>
-            <div class="card-body">
-                <p>Are you sure you want to delete "{{ object }}"?</p>
-                <form method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Confirm Delete</button>
-                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
-                </form>
+    <div class="col-12 col-md-8 col-lg-5">
+        <div class="delete-card">
+            <!-- Warning Icon -->
+            <div class="delete-icon">
+                <i class="bi bi-trash3"></i>
             </div>
+
+            <!-- Title -->
+            <h3 class="fw-bold mb-2">Delete Expense?</h3>
+            <p class="text-secondary mb-4">
+                Are you sure you want to delete <strong class="text-white">{{ object.title }}</strong>?
+                <br><small>This action cannot be undone.</small>
+            </p>
+
+            <!-- Amount Badge -->
+            <div class="mb-4">
+                <span class="badge bg-danger bg-opacity-10 text-danger fs-5 px-4 py-2">
+                    -${{ object.amount|floatformat:2 }}
+                </span>
+            </div>
+
+            <!-- Actions -->
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="{% url 'dashboard' %}" class="btn btn-glass px-4">
+                        <i class="bi bi-x-lg me-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="bi bi-trash me-2"></i>Delete
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -1,23 +1,70 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Budget Form{% endblock %}
+{% block title %}{% if form.instance.pk %}Edit{% else %}New{% endif %} Budget - FinanceFlow{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="glass-card">
-      <h4 class="mb-4">{% if form.instance.pk %}Edit{% else %}Set{% endif %} Budget</h4>
-      
-      <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-primary">Save Budget</button>
-            <a href="{% url 'budget-list' %}" class="btn btn-glass text-decoration-none text-center">Cancel</a>
+    <div class="col-12 col-md-8 col-lg-6">
+        <!-- Header -->
+        <div class="d-flex align-items-center mb-4">
+            <a href="{% url 'budget-list' %}" class="btn btn-glass me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <div>
+                <h3 class="fw-bold mb-1">
+                    <i class="bi bi-piggy-bank me-2 text-accent"></i>
+                    {% if form.instance.pk %}Edit Budget{% else %}New Budget{% endif %}
+                </h3>
+                <p class="text-secondary mb-0">{% if form.instance.pk %}Update your budget limits{% else %}Set spending limits for a category{% endif %}</p>
+            </div>
         </div>
-      </form>
+
+        <!-- Form Card -->
+        <div class="glass-card">
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="mb-4">
+                    <label class="form-label" for="{{ field.id_for_label }}">
+                        {% if 'amount' in field.name %}
+                        <i class="bi bi-currency-dollar"></i>
+                        {% elif 'category' in field.name %}
+                        <i class="bi bi-tag"></i>
+                        {% elif 'start' in field.name %}
+                        <i class="bi bi-calendar-event"></i>
+                        {% elif 'end' in field.name %}
+                        <i class="bi bi-calendar-check"></i>
+                        {% else %}
+                        <i class="bi bi-input-cursor"></i>
+                        {% endif %}
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <small class="text-muted d-block mt-1">{{ field.help_text|striptags }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                    <small class="text-danger mt-1 d-block">
+                        <i class="bi bi-exclamation-circle me-1"></i>{{ field.errors.0 }}
+                    </small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="divider"></div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-primary flex-grow-1">
+                        <i class="bi bi-check-lg me-2"></i>Save Budget
+                    </button>
+                    <a href="{% url 'budget-list' %}" class="btn btn-glass">
+                        <i class="bi bi-x-lg me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}
