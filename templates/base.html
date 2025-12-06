@@ -88,46 +88,50 @@
             <a class="navbar-brand brand-logo" href="{% url 'dashboard' %}">
                 <i class="bi bi-wallet2 me-2"></i>FinanceFlow
             </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
-                <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
-                    <h5 class="offcanvas-title text-white">Menu</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-                </div>
-                <div class="offcanvas-body d-flex flex-column">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}"><i class="bi bi-grid-fill me-2"></i> Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'income-list' %}"><i class="bi bi-arrow-down-circle me-2"></i> Income</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'budget-list' %}"><i class="bi bi-piggy-bank me-2"></i> Budgets</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'reports' %}"><i class="bi bi-graph-up me-2"></i> Reports</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'category-create' %}"><i class="bi bi-tags me-2"></i> Add Category</a></li>
-                    </ul>
-                    
-                    {% if user.is_authenticated %}
-                    <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="avatar bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-2" style="width: 40px; height: 40px;">
-                                {{ user.username|first|upper }}
-                            </div>
-                            <div>
-                                <div class="text-white fw-medium">{{ user.username }}</div>
-                                <small class="text-secondary">Logged In</small>
-                            </div>
-                        </div>
-                        <form action="{% url 'logout' %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-glass w-100"><i class="bi bi-box-arrow-right me-2"></i> Logout</button>
-                        </form>
-                    </div>
-                    {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-primary w-100 mt-auto">Login</a>
-                    {% endif %}
-                </div>
-            </div>
         </div>
     </nav>
+
+    <!-- Mobile Offcanvas Menu -->
+    <div class="offcanvas offcanvas-end d-md-none" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+            <h5 class="offcanvas-title text-white" id="offcanvasNavbarLabel">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}"><i class="bi bi-grid-fill me-2"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'income-list' %}"><i class="bi bi-arrow-down-circle me-2"></i> Income</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'budget-list' %}"><i class="bi bi-piggy-bank me-2"></i> Budgets</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'reports' %}"><i class="bi bi-graph-up me-2"></i> Reports</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'expense-create' %}"><i class="bi bi-plus-circle me-2"></i> Add Expense</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'income-create' %}"><i class="bi bi-arrow-down-circle me-2"></i> Add Income</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'category-create' %}"><i class="bi bi-tags me-2"></i> Add Category</a></li>
+            </ul>
+            
+            {% if user.is_authenticated %}
+            <div class="border-top border-secondary border-opacity-25 pt-3 mt-3">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-2" style="width: 40px; height: 40px;">
+                        {{ user.username|first|upper }}
+                    </div>
+                    <div>
+                        <div class="text-white fw-medium">{{ user.username }}</div>
+                        <small class="text-secondary">Logged In</small>
+                    </div>
+                </div>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-glass w-100"><i class="bi bi-box-arrow-right me-2"></i> Logout</button>
+                </form>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary w-100 mt-auto">Login</a>
+            {% endif %}
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="content-wrapper">

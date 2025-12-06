@@ -10,12 +10,7 @@
         <p class="text-secondary mb-0">Here's your financial overview</p>
     </div>
     <div class="mt-3 mt-md-0">
-        <a href="#" 
-           class="btn btn-primary"
-           hx-get="{% url 'expense-create' %}" 
-           hx-target="#modal-container" 
-           data-bs-toggle="modal" 
-           data-bs-target="#modal-container">
+        <a href="{% url 'expense-create' %}" class="btn btn-primary">
            <i class="bi bi-plus-lg me-2"></i>Add Expense
         </a>
     </div>
